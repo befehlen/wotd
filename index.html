@@ -1,0 +1,163 @@
+<html>
+<head>
+    <style>
+        #result {
+            width: 200px;
+            height: 100px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            background-color: #F0F0E0;
+        }
+        #startBtn {
+            width: 50px;
+            height: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            background-color: #b0e0e6;
+        }
+    </style>
+</head>
+<body>
+    <div id="result">이달의 회식은?</div>
+    <div id="startBtn">시작</div>
+    <script>
+        function decidePlace(placeList) {
+            var placePrefList = [],
+                totalPref = 0,
+                placeDecided = false,
+                diceResult, placeResult;
+
+            placeList.forEach(function (prefInfo, idx) {
+                var sum = 0;
+
+                prefInfo.pref.forEach(function (pref) {
+                    sum += pref;
+                });
+
+                placePrefList[idx] = sum;
+                totalPref += sum;
+            });
+
+            diceResult = (Math.floor(Math.random() * 1000) % totalPref);
+
+            placePrefList.forEach(function (pref, idx) {
+                diceResult -= pref;
+                if (diceResult <= 0 && !placeDecided) {
+                    placeResult = idx;
+                    placeDecided = true;
+                }
+            })
+
+            return placeList[placeResult].name;
+        }
+
+        function decideLunchPlace() {
+            var placeForLunchPrefList = [
+                {
+                    name: "아비뉴프랑 차이나팩토리",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                },
+                {
+                    name: "빕스",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                },
+                {
+                    name: "H스퀘어 어니스트그릴",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                },
+                {
+                    name: "아비뉴프랑 생어거스틴 (태국, 퓨전아시아 음식)",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                },
+                {
+                    name: "아비뉴프랑 부처스컷",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                },
+                // {
+                //     name: "새로운 장소 탐색",
+                //     pref: [ 5, 5, 5, 5, 5 ]
+                // }
+            ];
+
+            return decidePlace(placeForLunchPrefList);
+        }
+
+        function decideDinnerPlace() {
+            var placeForDinnerPrefList = [
+                {
+                    name: "미각(양꼬치)",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                },
+                {
+                    name: "천지양 꺼먹돼지",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                },
+                {
+                    name: "매드후라이드치킨",
+                    // WS, SH, JW, JH
+                    pref: [ 6, 6, 5, 5, 6 ]
+                },
+                {
+                    name: "캠뜰(삼겹살)",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                },
+                // {
+                //     name: "새로운 장소 탐색",
+                //     pref: [ 5, 5, 5, 5, 5 ]
+                // }
+            ];
+
+            return decidePlace(placeForDinnerPrefList);
+        }
+
+        function decideActivityPlace() {
+            var placeForActivityPrefList = [
+                {
+                    name: "새로운 장소 탐색",
+                    pref: [ 5, 5, 5, 5, 5 ]
+                }
+            ];
+        }
+
+        var startBtn = document.getElementById("startBtn"),
+            resultArea = document.getElementById("result")
+            lunchPrefList = [
+                6,    // SWS
+                8,    // LJH
+                2,    // KCY
+                3,    // KSH
+                5    // KJU
+            ],
+            numOfMembers = lunchPrefList.length,
+            decided = false;
+
+        startBtn.addEventListener("mouseup", function () {
+            var isLunch, diceResult, memberIdx, timeTxt, placeTxt;
+
+            if (decided) {
+                return;
+            }
+
+            diceResult = (Math.floor(Math.random() * 1000) % (numOfMembers * 10));
+            memberIdx = ~~(diceResult / 10);
+            isLunch = (lunchPrefList[memberIdx] > (diceResult % 10));
+
+            if (isLunch) {
+                timeTxt = "점심!! - ";
+                placeTxt = decideLunchPlace()
+            } else {
+                timeTxt = "저녁!! - ";
+                placeTxt = decideDinnerPlace()
+            }
+            resultArea.textContent = timeTxt + "그리고... 장소는...?";
+
+            window.setTimeout(function () {
+                resultArea.textContent = timeTxt + placeTxt;
+            }, 2000);
+
+            //decided = true;
+        });
+    </script>
+</body>
